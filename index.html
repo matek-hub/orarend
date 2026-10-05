@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Kolozs megyei tanév 2026/2027</title>
+<style>
+html,body{overflow-x:hidden}
+*{box-sizing:border-box} html,body{min-height:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#20232a;
+  background:linear-gradient(160deg,#3c4a5c 0%,#51697a 45%,#7c9a92 100%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 20px)}
+.card{width:100%;max-width:390px;background:linear-gradient(165deg,#ffffff,#f1f4f3);border-radius:24px;padding:22px 20px;box-shadow:0 10px 30px #2c384540}
+h1{font-size:17px;margin:0 0 4px;background:linear-gradient(90deg,#3c4a5c,#5c8374);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.sub{font-size:12px;color:#8a8f9a;margin-bottom:18px}
+.badge{display:inline-block;padding:5px 12px;border-radius:999px;background:linear-gradient(90deg,#51697a,#6f8f83);color:white;font-size:12px;margin-bottom:10px;font-weight:650}
+.main{font-size:30px;font-weight:800;line-height:1.1;background:linear-gradient(90deg,#3c4a5c,#5c8374);-webkit-background-clip:text;background-clip:text;color:transparent}
+.date{font-size:16px;margin-top:7px;color:#3d3450;font-weight:600}
+.note{font-size:13px;color:#6b6478;margin-top:10px;line-height:1.35}
+.progress{height:8px;background:#ece7fb;border-radius:8px;margin:16px 0 12px;overflow:hidden}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#51697a,#7c9a92);border-radius:8px;transition:width .3s}
+.week-track{display:flex;gap:6px;margin:16px 0 5px}
+.week-seg{flex:1;height:9px;border-radius:6px;background:#e5e9eb}
+.week-seg.past{background:linear-gradient(90deg,#51697a,#6f8f83)}
+.week-seg.today{background:linear-gradient(90deg,#c97b5b,#b9633f);box-shadow:0 0 0 3px #b9633f26}
+.week-labels{display:flex;gap:6px;margin-bottom:12px}
+.week-labels span{flex:1;text-align:center;font-size:10.5px;color:#a6abb3;font-weight:650}
+.week-labels span.today-label{color:#b9633f;font-weight:800}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#8a8f9a}
+button{width:100%;margin-top:15px;padding:12px;border:0;border-radius:14px;background:linear-gradient(90deg,#3c4a5c,#5c8374);color:white;font-weight:700;font-size:15px;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 16px #3c4a5c40}
+.empty{color:#6b6478;font-size:14px;line-height:1.4}
+.vacation-info{font-size:12.5px;color:#6f7580;margin-top:14px;padding-top:12px;border-top:1px solid #ece9e9;font-weight:600}
+.vacation-info b{color:#b9633f;font-weight:800}
+.card2{width:100%;max-width:390px;background:linear-gradient(165deg,#ffffff,#f1f4f3);border-radius:24px;padding:20px 18px;box-shadow:0 10px 30px #2c384540;margin-top:14px}
+.card2 h2{font-size:15px;margin:0 0 12px;color:#3d3450;font-weight:800;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card2 h2 span.sched-date{font-size:11.5px;color:#8a8f9a;font-weight:600;white-space:nowrap}
+.sched-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;margin-bottom:6px}
+.sched-time{font-size:11.5px;color:#8a8f9a;width:70px;flex-shrink:0;font-weight:600}
+.sched-class{font-size:14.5px;font-weight:650;color:#3d3450}
+.sched-empty .sched-class{color:#b8b3c4;font-weight:500;font-style:italic}
+.sched-row.now{background:linear-gradient(90deg,#c97b5b,#b9633f);box-shadow:0 4px 14px #b9633f40}
+.sched-row.now .sched-time,.sched-row.now .sched-class{color:white}
+.sched-row.next{background:#e7f0ec;border:1.5px solid #9fb8ab}
+.sched-row.next .sched-time{color:#4c6b5b}
+.sched-row.next .sched-class{color:#3c4a5c}
+.sched-tags{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.sched-tag{font-size:10px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.35);white-space:nowrap}
+.sched-row.next .sched-tag{background:#51697a;color:white}
+.sched-row.has-test{border:1.5px dashed #d9a227}
+.tag-test{background:#f6e3ab!important;color:#8a6a12!important}
+.sched-test-note{font-size:11px;color:#a6873a;font-weight:600;margin-top:2px}
+.sched-tag.tag-test{cursor:pointer}
+.test-manager{margin-top:14px;border-top:1px solid #ece9e9;padding-top:12px}
+.test-add-btn{width:100%;padding:9px;border:1.5px dashed #c7cdd1;border-radius:11px;background:transparent;color:#6f7580;font-weight:650;font-size:12.5px;-webkit-tap-highlight-color:transparent}
+.test-add-btn:active{background:#f3f5f4}
+.test-form{display:none;flex-direction:column;gap:8px;margin-top:10px}
+.test-form.open{display:flex}
+.test-input{width:100%;padding:9px 10px;border:1.5px solid #e2e6e8;border-radius:10px;font-size:13px;color:#3d3450;background:#fbfcfc;font-family:inherit}
+.test-save-btn{width:100%;padding:10px;border:0;border-radius:11px;background:linear-gradient(90deg,#c97b5b,#b9633f);color:white;font-weight:700;font-size:13px;-webkit-tap-highlight-color:transparent}
+.sched-none{color:#6b6478;font-size:14px;padding:6px 2px}
+.sched-nav{display:flex;justify-content:center;align-items:center;margin-top:14px;gap:8px}
+.sched-nav-btn{flex:0 0 auto!important;width:30px!important;height:30px!important;display:flex;align-items:center;justify-content:center;border:0;border-radius:9px;background:#e7f0ec;color:#3d5c4d;font-weight:700;font-size:14px;line-height:1;padding:0!important;margin:0!important;box-shadow:none!important;-webkit-tap-highlight-color:transparent}
+.sched-nav-btn:active{background:#d9e8e1}
+.sched-nav-today{flex:0 0 auto!important;width:auto!important;padding:5px 9px!important;border:0;border-radius:8px;background:transparent;color:#c2896f;font-weight:700;font-size:11px;line-height:1;white-space:nowrap;margin:0!important;box-shadow:none!important;-webkit-tap-highlight-color:transparent}
+.sched-nav-today.active{color:white;background:#b9633f}
+.auth-status{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#6f7580;font-weight:600}
+.auth-status .logged-in{color:#4c6b5b}
+.auth-logout-btn{flex:0 0 auto;width:auto!important;padding:5px 10px!important;margin:0!important;border:0;border-radius:8px;background:#eef1f0;color:#6f7580;font-weight:700;font-size:11px;box-shadow:none!important;-webkit-tap-highlight-color:transparent}
+.auth-form{display:flex;flex-direction:column;gap:8px}
+.auth-hint{font-size:11px;color:#a6abb3;margin-top:4px}
+
+.admin-bar{display:flex;justify-content:flex-end;gap:7px;margin-top:14px;padding-top:10px;border-top:1px solid #ece9e9}
+.icon-btn{flex:0 0 auto!important;width:26px!important;height:26px!important;padding:0!important;margin:0!important;border:0;border-radius:50%;background:#eef1f0;color:#aab0b6;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:none!important;-webkit-tap-highlight-color:transparent;opacity:.75}
+.icon-btn.unlocked{background:#e7f0ec;color:#4c6b5b;opacity:1}
+.icon-btn:active{opacity:1}
+.admin-panel{display:none;flex-direction:column;gap:8px;margin-top:10px}
+.admin-panel.open{display:flex}
+.editor-row{display:flex;gap:8px}
+.editor-row .test-input{flex:1}
+.test-save-btn.danger{background:linear-gradient(90deg,#b9633f,#8a4428);font-size:12px;padding:9px}
+.end-admin{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:flex-end;margin-top:10px}
+.end-admin .admin-panel{width:100%;background:linear-gradient(165deg,#ffffff,#f1f4f3);border-radius:18px;padding:14px;box-shadow:0 6px 18px #2c384530}
+</style>
+</head>
+<body>
+<div style="display:flex;flex-direction:column;align-items:center;width:100%">
+<div class="card">
+  <h1>Kolozs megyei tanév</h1>
+  <div id="content"></div>
+  <div id="vacation-info" class="vacation-info"></div>
+  <button onclick="location.reload()">Frissítés</button>
+</div>
+<div class="card2">
+  <h2 id="sched-title">Mai órarend</h2>
+  <div id="sched-content"></div>
+  <div class="sched-nav">
+    <button class="sched-nav-btn" onclick="shiftDay(-1)">‹</button>
+    <button class="sched-nav-today" id="today-btn" onclick="shiftDay(0,true)">Ma</button>
+    <button class="sched-nav-btn" onclick="shiftDay(1)">›</button>
+  </div>
+  <div class="admin-bar">
+    <button class="icon-btn" id="icon-test" onclick="togglePanel('test')" title="Felmérő">📝</button>
+    <button class="icon-btn" id="icon-auth" onclick="togglePanel('auth')" title="Bejelentkezés">🔒</button>
+  </div>
+  <div class="admin-panel" id="panel-test">
+    <input type="date" id="test-date" class="test-input">
+    <select id="test-period" class="test-input"></select>
+    <input type="text" id="test-note" class="test-input" placeholder="Megjegyzés (pl. tantárgy)">
+    <button class="test-save-btn" onclick="saveTest()">Mentés felmérőként</button>
+  </div>
+  <div class="admin-panel" id="panel-auth">
+    <div class="auth-status" id="auth-status">Betöltés…</div>
+    <div class="auth-form" id="auth-form">
+      <input type="email" id="auth-email" class="test-input" placeholder="Email">
+      <input type="password" id="auth-password" class="test-input" placeholder="Jelszó">
+      <button class="test-save-btn" onclick="doLogin()">Bejelentkezés</button>
+      <div class="auth-hint">Bejelentkezve tudsz felmérőt/órarendet szerkeszteni — olvasni bejelentkezés nélkül is lehet.</div>
+    </div>
+  </div>
+</div>
+<div class="end-admin">
+  <button class="icon-btn" id="icon-editor" onclick="togglePanel('editor')" title="Órarend szerkesztése">⚙</button>
+  <div class="admin-panel" id="panel-editor">
+    <div class="editor-row">
+      <select id="edit-day" class="test-input"></select>
+      <select id="edit-period" class="test-input"></select>
+    </div>
+    <input type="text" id="edit-class" class="test-input" placeholder="Osztály/csoport neve (üresen = lyukasóra)">
+    <button class="test-save-btn" onclick="saveScheduleSlot()">Mentés ebbe az órarendi sorba</button>
+    <button class="test-save-btn danger" onclick="clearWholeSchedule()">Teljes órarend törlése (új tanév indítása)</button>
+  </div>
+</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCBDJt0dbSE-dmKb3Ul4Zu5X5sEWnpCURU",
+  authDomain: "orarend-4b4ff.firebaseapp.com",
+  databaseURL: "https://orarend-4b4ff-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "orarend-4b4ff",
+  storageBucket: "orarend-4b4ff.firebasestorage.app",
+  messagingSenderId: "764459952884",
+  appId: "1:764459952884:web:4b5b2df887b8c5302c0ca1"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth = firebase.auth();
+const fbDb = firebase.database();
+
+function doLogin(){
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value;
+  if(!email || !password){ alert("Add meg az emailt és a jelszót!"); return; }
+  fbAuth.signInWithEmailAndPassword(email, password)
+    .catch(err => alert("Sikertelen bejelentkezés: " + err.message));
+}
+function doLogout(){
+  fbAuth.signOut();
+}
+
+function togglePanel(name){
+  const panel = document.getElementById("panel-" + name);
+  const icon = document.getElementById("icon-" + name);
+  const isOpen = panel.classList.toggle("open");
+  if(icon) icon.style.opacity = isOpen ? "1" : "";
+}
+function closePanel(name){
+  document.getElementById("panel-" + name).classList.remove("open");
+}
+
+fbAuth.onAuthStateChanged(user => {
+  const statusEl = document.getElementById("auth-status");
+  const formEl = document.getElementById("auth-form");
+  const iconAuth = document.getElementById("icon-auth");
+  const iconEditor = document.getElementById("icon-editor");
+  if(user){
+    statusEl.innerHTML = `<span class="logged-in">✓ Bejelentkezve: ${user.email}</span><button class="auth-logout-btn" onclick="doLogout()">Kijelentkezés</button>`;
+    formEl.style.display = "none";
+    iconAuth.textContent = "🔓";
+    iconAuth.classList.add("unlocked");
+    iconEditor.classList.add("unlocked");
+  } else {
+    statusEl.textContent = "Nem vagy bejelentkezve";
+    formEl.style.display = "flex";
+    iconAuth.textContent = "🔒";
+    iconAuth.classList.remove("unlocked");
+    iconEditor.classList.remove("unlocked");
+  }
+});
+
+const data = [{"week": 1, "start": "2026-09-07", "end": "2026-09-11", "note": "Tanévkezdés (I. modul)"}, {"week": 2, "start": "2026-09-14", "end": "2026-09-18", "note": ""}, {"week": 3, "start": "2026-09-21", "end": "2026-09-25", "note": ""}, {"week": 4, "start": "2026-09-28", "end": "2026-10-02", "note": ""}, {"week": 5, "start": "2026-10-05", "end": "2026-10-09", "note": "okt. 5. (h) Oktatás Nemzetközi Napja – nincs tanítás"}, {"week": 6, "start": "2026-10-12", "end": "2026-10-16", "note": ""}, {"week": 7, "start": "2026-10-19", "end": "2026-10-23", "note": "Zöld hét • I. modul vége"}, {"week": null, "start": "2026-10-26", "end": "2026-10-30", "note": "Őszi vakáció (okt. 24. – nov. 1.)"}, {"week": 8, "start": "2026-11-02", "end": "2026-11-06", "note": "II. modul kezdete"}, {"week": 9, "start": "2026-11-09", "end": "2026-11-13", "note": ""}, {"week": 10, "start": "2026-11-16", "end": "2026-11-20", "note": ""}, {"week": 11, "start": "2026-11-23", "end": "2026-11-27", "note": ""}, {"week": 12, "start": "2026-11-30", "end": "2026-12-04", "note": "dec. 1. (k) Románia Nemzeti Napja – munkaszüneti nap"}, {"week": 13, "start": "2026-12-07", "end": "2026-12-11", "note": ""}, {"week": 14, "start": "2026-12-14", "end": "2026-12-18", "note": ""}, {"week": 15, "start": "2026-12-21", "end": "2026-12-25", "note": "dec. 21–22. még tanítás, Téli vakáció kezdete dec. 23-tól"}, {"week": null, "start": "2026-12-28", "end": "2027-01-01", "note": "Téli vakáció (dec. 23. – jan. 10.)"}, {"week": null, "start": "2027-01-04", "end": "2027-01-08", "note": "Téli vakáció folytatódik"}, {"week": 16, "start": "2027-01-11", "end": "2027-01-15", "note": "III. modul kezdete"}, {"week": 17, "start": "2027-01-18", "end": "2027-01-22", "note": ""}, {"week": 18, "start": "2027-01-25", "end": "2027-01-29", "note": "jan. 24. (v) Fejedelemségek Egyesülése – hétvégére esik"}, {"week": 19, "start": "2027-02-01", "end": "2027-02-05", "note": ""}, {"week": 20, "start": "2027-02-08", "end": "2027-02-12", "note": "III. modul vége (Kolozs megye)"}, {"week": null, "start": "2027-02-15", "end": "2027-02-19", "note": "Mobil vakáció / \"sívakáció\" (Kolozs – A csoport)"}, {"week": 21, "start": "2027-02-22", "end": "2027-02-26", "note": "Iskola másként • IV. modul kezdete"}, {"week": 22, "start": "2027-03-01", "end": "2027-03-05", "note": ""}, {"week": 23, "start": "2027-03-08", "end": "2027-03-12", "note": ""}, {"week": 24, "start": "2027-03-15", "end": "2027-03-19", "note": ""}, {"week": 25, "start": "2027-03-22", "end": "2027-03-26", "note": ""}, {"week": 26, "start": "2027-03-29", "end": "2027-04-02", "note": ""}, {"week": 27, "start": "2027-04-05", "end": "2027-04-09", "note": ""}, {"week": 28, "start": "2027-04-12", "end": "2027-04-16", "note": ""}, {"week": 29, "start": "2027-04-19", "end": "2027-04-23", "note": "IV. modul vége"}, {"week": null, "start": "2027-04-26", "end": "2027-04-30", "note": "Tavaszi (húsvéti) vakáció (ápr. 24. – máj. 4.)"}, {"week": 30, "start": "2027-05-03", "end": "2027-05-07", "note": "Vakáció máj. 3–4-ig tart, V. modul kezdete máj. 5. (sze)"}, {"week": 31, "start": "2027-05-10", "end": "2027-05-14", "note": ""}, {"week": 32, "start": "2027-05-17", "end": "2027-05-21", "note": ""}, {"week": 33, "start": "2027-05-24", "end": "2027-05-28", "note": ""}, {"week": 34, "start": "2027-05-31", "end": "2027-06-04", "note": ""}, {"week": 35, "start": "2027-06-07", "end": "2027-06-11", "note": ""}, {"week": 36, "start": "2027-06-14", "end": "2027-06-18", "note": "Utolsó tanítási nap: jún. 18. (p)"}];
+
+const huMonths=["január","február","március","április","május","június","július","augusztus","szeptember","október","november","december"];
+function d(s){return new Date(s+"T00:00:00")}
+function fmt(x){return x.getDate()+". "+huMonths[x.getMonth()]+" "+x.getFullYear()}
+function render(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  let item=data.find(x=>now>=d(x.start)&&now<=d(x.end));
+  let next=data.find(x=>d(x.start)>now);
+  const c=document.getElementById("content");
+  if(item){
+    const s=d(item.start), e=d(item.end);
+    const dayLabels=["H","K","Sze","Cs","P"];
+    let segs="", labels="";
+    for(let i=0;i<5;i++){
+      const dd=new Date(s); dd.setDate(dd.getDate()+i);
+      let cls = dd.getTime()===now.getTime() ? "today" : (dd.getTime()<now.getTime() ? "past" : "");
+      segs += `<div class="week-seg ${cls}"></div>`;
+      labels += `<span class="${cls==="today"?"today-label":""}">${dayLabels[i]}</span>`;
+    }
+    c.innerHTML=`<div class="badge">${item.week ? item.week+". tanítási hét" : "Vakáció"}</div>
+      <div class="main">${item.week ? "Tanítás" : "Szünet"}</div>
+      <div class="date">${fmt(s)} – ${fmt(e)}</div>
+      ${item.note ? `<div class="note">${item.note}</div>` : ""}
+      <div class="week-track">${segs}</div>
+      <div class="week-labels">${labels}</div>`;
+  } else if(next){
+    c.innerHTML=`<div class="badge">Következő időszak</div>
+      <div class="main">${next.week ? next.week+". tanítási hét" : "Szünet"}</div>
+      <div class="date">${fmt(d(next.start))} – ${fmt(d(next.end))}</div>
+      ${next.note ? `<div class="note">${next.note}</div>` : ""}`;
+  } else {
+    c.innerHTML=`<div class="empty">A megadott tanév időszakán kívül vagyunk.</div>`;
+  }
+
+  const vacInfo = document.getElementById("vacation-info");
+  if(item && item.week === null){
+    vacInfo.innerHTML = "Jelenleg vakáció van 🎉";
+  } else {
+    const nextVac = data.find(x => x.week === null && d(x.start) > now);
+    if(nextVac){
+      const vacStart = d(nextVac.start);
+      const dow = now.getDay(); // 0=vas .. 6=szo
+      const monIdx = (dow + 6) % 7; // 0=hét .. 6=vas
+      const nextMonday = new Date(now);
+      nextMonday.setDate(nextMonday.getDate() + (7 - monIdx));
+      if(vacStart < nextMonday){
+        vacInfo.innerHTML = "Ezen a héten kezdődik a legközelebbi <b>vakáció</b>!";
+      } else {
+        const weeksGap = Math.round((vacStart - nextMonday) / (7*86400000));
+        if(weeksGap === 0){
+          vacInfo.innerHTML = "Jövő héten kezdődik a legközelebbi <b>vakáció</b>!";
+        } else {
+          vacInfo.innerHTML = `<b>${weeksGap} hét</b> van a legközelebbi vakációig`;
+        }
+      }
+    } else {
+      vacInfo.innerHTML = "";
+    }
+  }
+}
+render();
+
+/* ====================================================================
+   ÓRARENED — ALAPÉRTELMEZETT / KEZDŐ ÉRTÉKEK
+   ====================================================================
+   1) PERIODS: az órák kezdete/vége percben (óra*60+perc). Ha változik a
+      csöngetési rend, itt add meg újra (ez marad kódban szerkesztve).
+   2) ORAREND_DEFAULT: ez csak az ELSŐ indulásnál számít, amíg a
+      Firebase adatbázisban még nincs mentve órarend. Ha egyszer a
+      ⚙ ikon alatti szerkesztővel elmentesz bármit, onnantól a
+      Firebase-ben tárolt adat lesz érvényben, ez a blokk figyelmen
+      kívül marad — tehát évente NEM kell ide visszajönni kódot írni,
+      elég a widgeten belüli ⚙ Órarend szerkesztése panelt használni.
+   ==================================================================== */
+const PERIODS = [
+  [7*60+30, 8*60+20],   // 1. óra  7:30–8:20
+  [8*60+30, 9*60+20],   // 2. óra  8:30–9:20
+  [9*60+30, 10*60+20],  // 3. óra  9:30–10:20
+  [10*60+40, 11*60+30], // 4. óra 10:40–11:30 (nagyszünet 10:20–10:40 után)
+  [11*60+40, 12*60+30], // 5. óra 11:40–12:30
+  [12*60+40, 13*60+30], // 6. óra 12:40–13:30
+  [13*60+40, 14*60+30], // 7. óra 13:40–14:30
+];
+
+const ORAREND_DEFAULT = {
+  1: ["V.A.", "IX.B.", "VIII.A", "VIII.B", "IX.C.", "X.A.", ""],           // Hétfő
+  2: ["IX.B.", "VIII.B", "V.A.", "VIII.A", "", "XII.C.", ""],              // Kedd
+  3: ["V.A.", "X.A.", "XII.C.", "VIII.B", "", "", ""],                    // Szerda
+  4: ["IX.B.", "V.A.", "VIII.B", "IX.C.", "VIII.A", "", ""],              // Csütörtök
+  5: ["VIII.A", "Oszt.fő – V.A.", "IX.B.", "XII.C.", "", "", ""],         // Péntek
+};
+let ORAREND_LIVE = JSON.parse(JSON.stringify(ORAREND_DEFAULT));
+
+fbDb.ref("orarend").on("value", snapshot => {
+  const val = snapshot.val();
+  if(val && val._initialized){
+    const built = {1:["","","","","","",""],2:["","","","","","",""],3:["","","","","","",""],4:["","","","","","",""],5:["","","","","","",""]};
+    for(let day=1; day<=5; day++){
+      if(val[day]){
+        for(let p=1; p<=7; p++){
+          if(val[day][p]) built[day][p-1] = val[day][p];
+        }
+      }
+    }
+    ORAREND_LIVE = built;
+  } else {
+    ORAREND_LIVE = JSON.parse(JSON.stringify(ORAREND_DEFAULT));
+  }
+  renderSchedule();
+});
+
+function saveScheduleSlot(){
+  if(!fbAuth.currentUser){ alert("Előbb jelentkezz be, hogy az órarendet tudd szerkeszteni!"); return; }
+  const day = document.getElementById("edit-day").value;
+  const period = document.getElementById("edit-period").value;
+  const cls = document.getElementById("edit-class").value.trim();
+  fbDb.ref(`orarend/${day}/${period}`).set(cls);
+  fbDb.ref("orarend/_initialized").set(true);
+  document.getElementById("edit-class").value = "";
+}
+
+function clearWholeSchedule(){
+  if(!fbAuth.currentUser){ alert("Előbb jelentkezz be, hogy az órarendet tudd szerkeszteni!"); return; }
+  if(!confirm("Biztosan törlöd a TELJES órarendet? Ez minden napot kiürít, hogy az új tanévhez elölről felépíthesd. Nem vonható vissza.")) return;
+  fbDb.ref("orarend").set({ _initialized: true });
+}
+
+/* ====================================================================
+   FELMÉRŐK — ide írd be, ha egy adott NAPON felmérőt iratsz.
+   ====================================================================
+   Ez dátumhoz (nem ismétlődő heti sorhoz) kötött, hiszen egy felmérő
+   egyszeri esemény. Egy sor = { date: "ÉÉÉÉ-HH-NN", period: óraszám (1-7),
+   note: rövid megjegyzés (elhagyható, "" is lehet) }.
+   Az érintett óránál 📝 ikon és "FELMÉRŐ" jelzés jelenik meg.
+   Példa:
+   { date: "2026-10-05", period: 3, note: "Törtek" },
+   ==================================================================== */
+const FELMERESEK = [
+  // { date: "2026-10-05", period: 3, note: "Törtek" },
+];
+
+const HU_DAYS = ["vasárnap","hétfő","kedd","szerda","csütörtök","péntek","szombat"];
+
+function pad(n){return n.toString().padStart(2,"0")}
+function timeStr(m){return pad(Math.floor(m/60))+":"+pad(m%60)}
+
+let userTests = []; // { _key, date, period, note } — a Firebase-ből töltve, valós időben szinkronizálva
+fbDb.ref("felmeresek").on("value", snapshot => {
+  const val = snapshot.val() || {};
+  userTests = Object.keys(val).map(key => ({ _key: key, ...val[key] }));
+  renderSchedule();
+});
+function allTests(){ return FELMERESEK.concat(userTests); }
+
+function populatePeriodSelect(){
+  const opts = PERIODS.map((p,i)=>`<option value="${i+1}">${i+1}. óra (${timeStr(p[0])}–${timeStr(p[1])})</option>`).join("");
+  document.getElementById("test-period").innerHTML = opts;
+  document.getElementById("edit-period").innerHTML = opts;
+}
+function populateDaySelect(){
+  const dayNames = ["Hétfő","Kedd","Szerda","Csütörtök","Péntek"];
+  document.getElementById("edit-day").innerHTML = dayNames.map((n,i)=>`<option value="${i+1}">${n}</option>`).join("");
+}
+
+function saveTest(){
+  if(!fbAuth.currentUser){ alert("Előbb jelentkezz be, hogy felmérőt tudj menteni!"); return; }
+  const date = document.getElementById("test-date").value;
+  const period = parseInt(document.getElementById("test-period").value, 10);
+  const note = document.getElementById("test-note").value.trim();
+  if(!date){ alert("Add meg a dátumot!"); return; }
+  fbDb.ref("felmeresek").push({ date, period, note })
+    .catch(err => alert("Hiba mentéskor: " + err.message));
+  document.getElementById("test-date").value = "";
+  document.getElementById("test-note").value = "";
+  closePanel("test");
+}
+
+function removeTest(date, period){
+  if(!fbAuth.currentUser){ alert("Előbb jelentkezz be, hogy törölni tudj!"); return; }
+  if(!confirm("Törlöd ezt a felmérő-jelölést?")) return;
+  const match = userTests.find(t => t.date === date && t.period === period);
+  if(match && match._key){
+    fbDb.ref("felmeresek/" + match._key).remove()
+      .catch(err => alert("Hiba törléskor: " + err.message));
+  }
+}
+
+let dayOffset = 0;
+
+function shiftDay(n, reset){
+  dayOffset = reset ? 0 : dayOffset + n;
+  renderSchedule();
+}
+
+function renderSchedule(){
+  const real = new Date();
+  const now = new Date(real);
+  now.setDate(now.getDate() + dayOffset);
+  const isToday = dayOffset === 0;
+  const cur = real.getHours()*60 + real.getMinutes();
+  const day = now.getDay();
+  const title = document.getElementById("sched-title");
+  const box = document.getElementById("sched-content");
+  const todayBtn = document.getElementById("today-btn");
+  todayBtn.classList.toggle("active", isToday);
+  const today = ORAREND_LIVE[day];
+
+  const dateLabel = `<span class="sched-date">${now.getDate()}. ${huMonths[now.getMonth()]} ${now.getFullYear()}</span>`;
+  const dayName = HU_DAYS[day].charAt(0).toUpperCase()+HU_DAYS[day].slice(1);
+  const heading = isToday ? "Mai órarend — " + dayName : dayName + " órarendje";
+
+  if(!today){
+    title.innerHTML = heading + dateLabel;
+    box.innerHTML = `<div class="sched-none">${isToday ? "Ma" : "Ezen a napon"} (${HU_DAYS[day]}) nincs tanítás.</div>`;
+    return;
+  }
+  title.innerHTML = heading + dateLabel;
+
+  let nextIdx = -1;
+  if(isToday){
+    for(let i=0;i<PERIODS.length;i++){ if(PERIODS[i][0] > cur){ nextIdx = i; break; } }
+  }
+
+  const ymd = now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
+
+  const rows = PERIODS.map((p,i)=>{
+    const cls = today[i] || "";
+    if(!cls) return "";
+    const isNow = isToday && cur >= p[0] && cur < p[1];
+    const isNext = isToday && i === nextIdx && cls;
+    const test = allTests().find(t => t.date === ymd && t.period === i+1);
+    let state = (isNow ? "now" : (isNext ? "next" : "")) + (test ? " has-test" : "");
+    const tags = [];
+    if(isNow) tags.push(`<span class="sched-tag">MOST</span>`);
+    if(isNext) tags.push(`<span class="sched-tag">KÖVETKEZŐ</span>`);
+    if(test) tags.push(`<span class="sched-tag tag-test" onclick="removeTest('${ymd}',${i+1})" title="Kattints a törléshez">📝 FELMÉRŐ ✕</span>`);
+    return `<div class="sched-row ${state}">
+      <div class="sched-time">${timeStr(p[0])}–${timeStr(p[1])}</div>
+      <div class="sched-class">${cls}${test && test.note ? `<div class="sched-test-note">${test.note}</div>` : ""}</div>
+      <div class="sched-tags">${tags.join("")}</div>
+    </div>`;
+  }).join("");
+  box.innerHTML = rows || `<div class="sched-none">${isToday ? "Ma" : "Ezen a napon"} nincs egyetlen órád sem.</div>`;
+}
+populatePeriodSelect();
+populateDaySelect();
+renderSchedule();
+setInterval(renderSchedule, 60000);
+</script>
+</body>
+</html>
